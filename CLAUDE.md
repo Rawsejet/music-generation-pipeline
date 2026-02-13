@@ -38,3 +38,15 @@ Steps 1–5 are DONE (RandomPrompt, LLM nodes, ACE-Step music, FLUX.2 image, vid
 - **comfyui_LLM_party node names** have emoji prefixes: search "API LLM Loader" to find `☁️API LLM Loader`. The LLM node exposes `temperature` and `max_length` only — `top_p`, `top_k`, `repeat_penalty` must be baked into an Ollama Modelfile.
 - **LLM output format** uses `=== TAGS ===`, `=== LYRICS ===`, `=== IMAGE_PROMPT ===` section markers that need regex parsing.
 - **YouTube API quota**: 6 uploads/day max (9,900 of 10,000 units). Failed requests still consume quota.
+
+## Development Workflow
+
+**Updating the repository**: Run `scripts/update-pipeline.sh` to:
+1. Update `workflows/music-generation-pipeline.json` from ComfyUI
+2. Redact YouTube OAuth credentials (client_id, client_secret)
+3. Commit and push all changes
+
+**Manual workflow updates** (if not using the script):
+1. Copy workflow: `cp /path/to/ComfyUI/user/default/workflows/music-generation-pipeline.json workflows/`
+2. Redact credentials (set client_id and client_secret to empty strings in YouTubeAuthNode)
+3. `git add -A && git commit -m "Update: $(date)" && git push origin main`
