@@ -123,16 +123,25 @@ Create a song with these parameters:
 | `JSON Get Value🐶` (lyrics) | `json_get_value` | text: from LLM assistant_response, key: `lyrics` | Lyrics string → TextEncodeAceStepAudio1.5[lyrics] |
 | `JSON Get Value🐶` (image_prompt) | `json_get_value` | text: from LLM assistant_response, key: `image_prompt` | Image prompt string → CLIPTextEncode[text] |
 
-### Stage 3A: Music Generation (ACE-Step 1.5)
+### Stage 3A: Music Generation (scromfyUI-AceStep 1.5) ✅ DONE
+**Migration**: Upgraded from ACE-Step AIO checkpoint to scromfyUI-AceStep with 5Hz LLM planner
+
 | Node | Type | Parameters | Output |
 |------|------|------------|--------|
-| `CheckpointLoaderSimple` | `CheckpointLoaderSimple` | Checkpoint: `ace_step_1.5_turbo_aio.safetensors` | MODEL, CLIP, VAE |
-| `EmptyAceStep1.5LatentAudio` | `EmptyAceStep1.5LatentAudio` | Seconds: 180, Batch size: 1 | Latent audio |
-| `TextEncodeAceStepAudio1.5` | `TextEncodeAceStepAudio1.5` | CLIP: from checkpoint, Tags: (from JSON Get Value tags), Lyrics: (from JSON Get Value lyrics) | Conditioning |
-| `KSampler` | `KSampler` | Model: from checkpoint, Positive: from TextEncode, Steps: 8, Sampler: res_multistep, Scheduler: simple, CFG: 1 | Latent audio |
-| `VAEDecodeAudio` | `VAEDecodeAudio` | Samples: from KSampler, VAE: from checkpoint | Audio tensor |
+| `AceStep5HzLMConfig` | `AceStep5HzLMConfig` | shift: 3.0, llm_audio_codes: true | LLM config |
+| `ScromfyACEStep15TaskTextEncodeNode` | `ScromfyACEStep15TaskTextEncodeNode` | Tags: (from JSON), Lyrics: (from JSON), clip: from VAE, llm_config: from AceStep5HzLMConfig | TASK |
+| `EmptyAceStepAudio` | `EmptyAceStepAudio` | seconds: 180, batch_size: 1 | Latent audio |
+| `AceStepDiffusionSampler` | `AceStepDiffusionSampler` | model: from TASK, task: from TASK, latent: from Empty, cfg_scale: 2.0, steps: 8, denoise: 1.0 | Latent audio |
+| `VAEDecodeAudio` | `VAEDecodeAudio` | Samples: from AceStepDiffusionSampler, VAE: from Scromfy node | Audio tensor |
 | `SaveAudio` | `SaveAudio` | Audio: from VAE, Filename: `ace_step_output` | Saved .wav file |
 | `PreviewAudio` | `PreviewAudio` | Audio: from VAE | Audio preview in UI |
+
+**Key Parameters (scromfyUI-AceStep)**:
+- `shift`: 3.0 (default: 3.0, controls generation speed/quality)
+- `llm_audio_codes`: true (enables LLM-guided audio generation)
+- `cfg_scale`: 2.0 (classifier-free guidance)
+- `steps`: 8 (sampling steps)
+- `denoise`: 1.0 (full denoising)
 
 ### Stage 3B: Image Generation (FLUX.2 Dev) ✅ DONE
 FLUX.2 Dev uses separate loaders (NOT CheckpointLoaderSimple):

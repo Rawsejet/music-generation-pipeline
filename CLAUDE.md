@@ -19,6 +19,8 @@ The actual ComfyUI installation lives at `/home/teja/Documents/comfy/ComfyUI/`.
 - `pipeline.md` — Comprehensive reference for all pipeline components, model choices, node options, prompt templates, and integration details
 - `COMFYDESIGN.md` — Node-by-node workflow specification with exact parameters, wiring diagrams, and step-by-step build instructions
 - `PLAN.md` — Implementation plan with phases, progress tracking, and next steps
+- `PLAN2.md` — Specific migration plan for ACE-Step to scromfyUI-AceStep (4B LM planner, shift parameter)
+- `SPEC.md` — Implementation specification with parallel coordinator pattern for the ACE-Step migration
 
 ## Hardware
 
@@ -29,6 +31,17 @@ Dual RTX PRO 6000 Blackwell GPUs (96GB VRAM each). GPU 0 runs ComfyUI, GPU 1 run
 Steps 1–5 are DONE (RandomPrompt, LLM nodes, ACE-Step music, FLUX.2 image, video assembly). Remaining:
 - Step 6: YouTube upload node
 - Step 7: Wire all stages together — **text splitting** (parsing LLM output into separate TAGS, LYRICS, IMAGE_PROMPT strings) is the key unsolved challenge
+
+## ACE-Step Migration (PLAN2.md + SPEC.md)
+
+Migration from ACE-Step AIO checkpoint to scromfyUI-AceStep:
+- **PLAN2.md**: Detailed migration plan with node wiring, parameter changes
+- **SPEC.md**: Implementation spec with parallel coordinator pattern
+
+The migration uses a **lead agent coordinator pattern** where:
+1. Lead agent tracks dependencies between tasks
+2. Worker agents run in parallel but check with lead before proceeding past dependency points
+3. This prevents race conditions while maximizing parallelism
 
 ## Critical Domain Knowledge
 

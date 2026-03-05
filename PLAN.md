@@ -46,15 +46,21 @@ curl http://localhost:11434/api/generate -d '{"model":"qwen3-gpu1:latest","promp
 
 ---
 
-## Phase 3: Download ACE-Step 1.5 Model
-**Goal**: Enable music generation
+## Phase 3: Install scromfyUI-AceStep 1.5
+**Goal**: Enable music generation with 5Hz LLM planner
 
 **Steps**:
-1. Download `ace_step_1.5_turbo_aio.safetensors` from official source
-2. Place in `ComfyUI/models/checkpoints/`
-3. Verify model appears in ComfyUI checkpoints list
+1. Install scromfyUI-AceStep custom node: `billwuhao/scromfyUI-AceStep`
+2. Model files are loaded automatically via HuggingFace hub
+3. Verify nodes appear in ComfyUI: `ScromfyACEStep15TaskTextEncodeNode`, `AceStep5HzLMConfig`, `AceStepDiffusionSampler`
 
-**VRAM Note**: ACE-Step requires under 4GB VRAM
+**Migration from ACE-Step AIO**: The scromfyUI-AceStep fork provides:
+- **5Hz LLM planner**: Better beat/lyric alignment
+- **`shift` parameter**: Controls generation speed/quality (default: 3.0)
+- **`llm_audio_codes`**: LLM-guided audio generation
+- **Updated params**: cfg_scale=2.0, steps=8, denoise=1.0
+
+**VRAM Note**: scromfyUI-AceStep requires under 4GB VRAM
 
 ---
 
