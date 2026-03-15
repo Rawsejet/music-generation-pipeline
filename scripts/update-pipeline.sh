@@ -19,24 +19,26 @@ fi
 
 # Step 2: Update workflow JSON from ComfyUI
 echo "[2/4] Updating workflow JSON..."
-WORKFLOW_SOURCE="/home/teja/Documents/comfy/ComfyUI/user/default/workflows/music-generation-pipeline.json"
-WORKFLOW_DEST="workflows/music-generation-pipeline.json"
-
-if [ ! -f "$WORKFLOW_SOURCE" ]; then
-    echo "Error: Workflow source not found at $WORKFLOW_SOURCE"
-    exit 1
-fi
 
 # Create workflows directory if it doesn't exist
 mkdir -p workflows
 
-# Copy and redact credentials using Python
-python3 -c "
+# Helper function to copy and redact a workflow
+update_workflow() {
+    local source=$1
+    local dest=$2
+
+    if [ ! -f "$source" ]; then
+        echo "Error: Workflow source not found at $source"
+        exit 1
+    fi
+
+    python3 -c "
 import json
 import sys
 
 try:
-    with open('$WORKFLOW_SOURCE', 'r') as f:
+    with open('$source', 'r') as f:
         data = json.load(f)
 
     # Find the YouTubeAuthNode and clear credentials
@@ -47,14 +49,21 @@ try:
                 node['widgets_values'][0] = ''
                 node['widgets_values'][1] = ''
 
-    with open('$WORKFLOW_DEST', 'w') as f:
+    with open('$dest', 'w') as f:
         json.dump(data, f)
 
-    print('Workflow updated and credentials redacted successfully')
+    print(f'Updated: $dest')
 except Exception as e:
     print(f'Error: {e}', file=sys.stderr)
     sys.exit(1)
 "
+}
+
+# Update primary workflow
+update_workflow "/home/teja/Documents/comfy/ComfyUI/user/default/workflows/music-generation-pipeline.json" "workflows/music-generation-pipeline.json"
+
+# Update v5 workflow
+update_workflow "/home/teja/Documents/comfy/ComfyUI/user/default/workflows/music-generation-pipeline-v5.json" "workflows/music-generation-pipeline-v5.json"
 
 # Step 3: Stage all changes
 echo "[3/4] Staging changes..."

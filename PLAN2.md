@@ -152,7 +152,6 @@ Model goes to: `models/checkpoints/acestep-5Hz-lm-4B/` (symlink or copy to check
 ## Critical Files
 
 - **Source repo**: https://github.com/scruffynerf/scromfyUI-AceStep
-- **ACE-Step reference**: https://github.com/ace-step/ACE-Step-1.5.git (remote: `acestep`)
 - **Workflow JSON**: `/home/teja/music-generation-pipeline/workflows/music-generation-pipeline-v2-scromfy.json`
 - **4B Model**: `ACE-Step/acestep-5Hz-lm-4B` on HuggingFace
 - **Model location**: `models/checkpoints/acestep-5Hz-lm-4B/`
