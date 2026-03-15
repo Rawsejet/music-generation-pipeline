@@ -62,8 +62,8 @@ except Exception as e:
 # Update primary workflow
 update_workflow "/home/teja/Documents/comfy/ComfyUI/user/default/workflows/music-generation-pipeline.json" "workflows/music-generation-pipeline.json"
 
-# Update v5 workflow
-update_workflow "/home/teja/Documents/comfy/ComfyUI/user/default/workflows/music-generation-pipeline-v5.json" "workflows/music-generation-pipeline-v5.json"
+# Update v4 workflow
+update_workflow "/home/teja/Documents/comfy/ComfyUI/user/default/workflows/music-generation-pipeline-v4.json" "workflows/music-generation-pipeline-v4.json"
 
 # Step 3: Stage all changes
 echo "[3/4] Staging changes..."
